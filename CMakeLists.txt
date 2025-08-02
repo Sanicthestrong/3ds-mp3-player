@@ -3,4 +3,7 @@ project(mp3_player)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(mp3_player main.cpp)
+add_executable(mp3_player main.cpp
+        libmp3player.h
+        libmp3player.cpp
+        source/string.h)
