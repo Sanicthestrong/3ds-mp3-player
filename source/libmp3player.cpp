@@ -6,7 +6,7 @@
 #include "dr_mp3.h"
 
 #include <3ds.h>
-#include <3ds/os.h>
+#include <3ds/ndsp/ndsp.h>
 #include <malloc.h>
 #include <string.h>
 #include <stdio.h>
@@ -23,6 +23,7 @@ static ndspWaveBuf waveBufs[2];
 static int currentBuf = 0;
 
 void initMP3Player() {
+    ndspInit();
     ndspSetOutputMode(NDSP_OUTPUT_STEREO);
     ndspChnReset(0);
     ndspChnSetInterp(0, NDSP_INTERP_POLYPHASE);
@@ -63,6 +64,7 @@ void playMP3(const char* path) {
         waveBufs[i].data_vaddr = audioBuffers[i];
         waveBufs[i].nsamples = frames;
         waveBufs[i].looping = false;
+        waveBufs[i].status = NDSP_WBUF_DONE;
 
         DSP_FlushDataCache(audioBuffers[i], frames * 2 * sizeof(int16_t));
         ndspChnWaveBufAdd(0, &waveBufs[i]);
