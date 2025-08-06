@@ -1,0 +1,34 @@
+#include <3ds.h>
+#include <stdio.h>
+#include "libmp3player.h"
+#include <string.h>
+
+
+int main() {
+    gfxInitDefault();
+    consoleInit(GFX_TOP, NULL);
+    fsInit();
+    initMP3Player();
+
+    printf("Press A to play, B to pause, Y to resume, START to quit.\n");
+    printf("test.\n");
+
+    while (aptMainLoop()) {
+        hidScanInput();
+        u32 kDown = hidKeysDown();
+
+        if (kDown & KEY_A) playMP3("sdmc:/music/[sic].mp3");
+        if (kDown & KEY_B) pauseMP3();
+        if (kDown & KEY_Y) resumeMP3();
+        if (kDown & KEY_START) break;
+
+        updateMP3(); // 💡 Important: must be called every frame to keep audio playing
+
+        gspWaitForVBlank();
+    }
+
+    stopMP3();
+    exitMP3Player();
+    gfxExit();
+    return 0;
+}

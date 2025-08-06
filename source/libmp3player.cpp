@@ -43,14 +43,10 @@ void initMP3Player() {
 void playMP3(const char* path) {
     if (isPlaying) stopMP3();
 
-    printf("Opening MP3: %s\n", path);
 
     if (!drmp3_init_file(&mp3, path, NULL)) {
-        printf("Error: failed to load MP3.\n");
         return;
     }
-
-    printf("MP3 loaded: %d Hz, %d channels\n", mp3.sampleRate, mp3.channels);
 
     isPlaying = true;
     isPaused = false;

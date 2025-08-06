@@ -1,34 +1,44 @@
 #include <3ds.h>
-#include <stdio.h>
+#include <citro2d.h>
+#include <string>
+#include <vector>
+#include <stack>
+#include <algorithm>
 #include "libmp3player.h"
-#include <string.h>
+#include "Metadata_Handler.h"
 
+enum class MenuLevel {
+    Main,
+    ArtistList,
+    AlbumList
+};
 
 int main() {
+    romfsInit();
     gfxInitDefault();
     consoleInit(GFX_TOP, NULL);
     fsInit();
-    initMP3Player();
+	initMP3Player();
 
-    printf("Press A to play, B to pause, Y to resume, START to quit.\n");
-    printf("test.\n");
+	auto metadata = Mp3MetadataReader::ReadMetadata("sdmc:/music/[sic].mp3");
+	printf("Title: %s\n", metadata.title.c_str());
+	printf("Artist: %s\n", metadata.artist.c_str());
+	printf("Album: %s\n", metadata.album.c_str());
+	printf("Genre: %s\n", metadata.genre.c_str());
+	printf("Year: %d\n", metadata.year);
+	printf("Track: %d\n", metadata.track);
+	printf("Disc: %d\n", metadata.disc);
 
     while (aptMainLoop()) {
         hidScanInput();
         u32 kDown = hidKeysDown();
 
-        if (kDown & KEY_A) playMP3("sdmc:/music/[sic].mp3");
-        if (kDown & KEY_B) pauseMP3();
-        if (kDown & KEY_Y) resumeMP3();
         if (kDown & KEY_START) break;
 
-        updateMP3(); // 💡 Important: must be called every frame to keep audio playing
-
         gspWaitForVBlank();
-    }
-
-    stopMP3();
-    exitMP3Player();
+    };
+	exitMP3Player();
     gfxExit();
+    romfsExit();
     return 0;
-}
+};
